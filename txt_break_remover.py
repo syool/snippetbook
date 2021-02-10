@@ -13,6 +13,7 @@ with open('lady.txt', 'rt', encoding=codec) as input:
         if writing_wo_breaks[i] == '': # detect all '' in the list
             writing_wo_breaks[i] = '\n\n' # replace '' into double line breaks
 
+# print(writing_wo_breaks)
 result = ''.join(writing_wo_breaks) # convert the list into a string
 # print(result)
 
