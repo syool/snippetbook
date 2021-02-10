@@ -5,7 +5,7 @@ writing_wo_breaks = []
     
 with open('Blood.txt', 'rt', encoding='cp949') as input:
     for line in input:
-        line = line.lstrip().rstrip() # remove spaces from head and tail of a sentence(line)
+        line = line.lstrip().rstrip() # remove line spaces from head and tail of a sentence
         writing_wo_breaks.append(line) # contain all sentences in a list
             
     for i in range(len(writing_wo_breaks)):
