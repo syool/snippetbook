@@ -29,7 +29,7 @@ def fetch(head, switch=switch):
         for i in tqdm(range(len(tails))):
             try:
                 request.urlretrieve(head+tails[i], './videos/{}/{}'.format(switch, tails[i]))
-            except: continue
+            except: continue # ingore errors and keep looping
             
     input.close()
     
