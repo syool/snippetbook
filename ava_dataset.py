@@ -34,3 +34,7 @@ def fetch(head, switch=switch):
     input.close()
     
 fetch(head_train, switch='train')
+print('downloading trainval done')
+
+fetch(head_test, switch='test')
+print('downloading test done')
