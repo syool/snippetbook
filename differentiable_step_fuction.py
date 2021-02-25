@@ -11,9 +11,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-smax = 400
-B = 9000
-sbatch = 64
+smax = 400 # this is hyperparameter; founded by gridsearch
+B = 9000 # batch size from the paper
+sbatch = 64 # batch interval
 
 slist = []
 blist = []
@@ -28,6 +28,15 @@ plt.xlabel('batch index (x64)')
 plt.ylabel('scaling parameter s')
 plt.legend()
 plt.show()
+
+# according to the paper:
+
+# s = the scaling parameter
+# e = embedding of a task
+# a = sigmoid(s*e)
+
+# sigmoid() behaves like step function, yet differentiable
+# thus, a ∈ [0,1]
 
 def sigmoid(x):
     return 1/(1+np.exp(-x))
