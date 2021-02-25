@@ -17,7 +17,7 @@ sbatch = 64 # batch interval
 
 slist = []
 blist = []
-for b in range(0,B,sbatch):
+for b in range(-9000,B,sbatch):
     s = 1/smax + (smax-1/smax) * b/B
     slist.append(s)
     blist.append(b)
@@ -48,3 +48,8 @@ plt.xlabel('scaling parameter s')
 plt.plot(x,y)
 plt.show()
 #%%
+
+# the gradient flow from this function is weak;
+# Embedding Gradient Compensation required
+
+# see section 2.5 in the paper
