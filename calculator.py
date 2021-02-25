@@ -1,5 +1,5 @@
 #%%
-import plotly.express as px
+import matplotlib.pyplot as plt
 
 smax = 400
 B = 9000
@@ -13,6 +13,6 @@ for b in range(0,B,sbatch):
     blist.append(b)
     print("when b={}:".format(b), s)
     
-fig = px.line(x=slist, y=blist)
-fig.show()
+plt.plot(slist, blist)
+plt.show()
 #%%
