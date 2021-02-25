@@ -11,8 +11,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-smax = 400 # this is hyperparameter; founded by gridsearch
-B = 9000 # batch size from the paper
+smax = 400 # hyperparameter founded by gridsearch
+B = 9000 # batch size
 sbatch = 64 # batch interval
 
 slist = []
@@ -36,7 +36,7 @@ plt.show()
 # a = sigmoid(s*e)
 
 # sigmoid() behaves like step function, yet differentiable
-# thus, a ∈ [0,1]
+# therefore, a ∈ [0,1]
 
 def sigmoid(x):
     return 1/(1+np.exp(-x))
