@@ -33,9 +33,9 @@ plt.show()
 
 # s = the scaling parameter
 # e = embedding of a task
-# a = sigmoid(s*e)
+# a = σ(s*e)
 
-# sigmoid() behaves like step function, yet differentiable
+# sigmoid σ() behaves like step function, yet differentiable
 # therefore, a ∈ [0,1]
 
 def sigmoid(x):
