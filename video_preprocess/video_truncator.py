@@ -22,7 +22,8 @@ def truncate(video, FPS):
         current_time = time() - prev_time
         
         if (ret is True) and (current_time > 1./FPS):
-            cv2.imwrite('./data/img'+str(i)+'.jpg', frame)
+            # cv2.imwrite('./data/img'+str(i)+'.jpg', frame)
+            print(frame)
             prev_time = time()
             
             if cv2.waitKey(1) > 0:
