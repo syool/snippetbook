@@ -14,6 +14,8 @@ from __future__ import print_function, division
 import os
 import pickle
 
+os.chdir('/home/user/Downloads')
+
 import cv2
 import numpy as np
 import torch
@@ -53,30 +55,30 @@ class GeneralVideoDataset(Dataset):
 
     def __init__(
         self,
-        clips_list_file,
+        # clips_list_file,
         root_dir,
         channels,
         time_depth,
         x_size,
         y_size,
         mean,
-        transform=None,
+        transform=False,
     ):
         """
         Args:
             clips_list_file (string): Path to the clipsList file with labels.
             root_dir (string): Directory with all the videoes.
             transform (callable, optional): Optional transform to be applied
-                on a sample.
+                on a sample. Default=False
             channels: Number of channels of frames
             time_depth: Number of frames to be loaded in a sample
             x_size, y_size: Dimensions of the frames
             mean: Mean value of the training set videos over each channel
         """
-        with open(clips_list_file, "rb") as fp:  # Unpickling
-            clips_list_file = pickle.load(fp)
+        # with open(clips_list_file, "rb") as fp:  # Unpickling
+        #     clips_list_file = pickle.load(fp)
 
-        self.clips_list = clips_list_file
+        # self.clips_list = clips_list_file
         self.root_dir = root_dir
         self.channels = channels
         self.time_depth = time_depth
@@ -85,8 +87,8 @@ class GeneralVideoDataset(Dataset):
         self.mean = mean
         self.transform = transform
 
-    def __len__(self):
-        return len(self.clips_list)
+    # def __len__(self):
+    #     return len(self.clips_list)
 
     def read_video(self, video_file):
         # Open the video file
@@ -116,14 +118,19 @@ class GeneralVideoDataset(Dataset):
 
     def __getitem__(self, idx):
 
-        video_file = os.path.join(self.root_dir, self.clips_list[idx][0])
+        video_file = os.path.join(self.root_dir) # removed: self.clips_list[idx][0]
         clip, failed_clip = self.read_video(video_file)
+        
         if self.transform:
             clip = self.transform(clip)
         sample = {
             "clip": clip,
-            "label": self.clips_list[idx][1],
+            # "label": self.clips_list[idx][1],
             "failedClip": failed_clip,
         }
 
         return sample
+    
+
+result = GeneralVideoDataset('./vidtest/001.mp4', channels=3, time_depth=10, x_size=1920, y_size=1080, mean=100)
+print(result)

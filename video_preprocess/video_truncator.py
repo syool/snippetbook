@@ -1,38 +1,34 @@
 import cv2
-from time import time
+import numpy as np
 
 import os
 os.chdir('/home/user/Downloads/vidtest')
 
 
-def truncate(video, FPS):
+def truncate(video, FPS=24):
     '''
     ---
         video = str, name of the input video \n
-        FPS = int, frame rate of the output 
+        FPS = int, frame rate of the output (default=24)
     '''
     vid = cv2.VideoCapture(video)
 
-    i = 0
-    prev_time = 0
-
-    while(vid.isOpened()):
+    current_frame = 0
+    
+    while(True):
         ret, frame = vid.read()
         
-        current_time = time() - prev_time
-        
-        if (ret is True) and (current_time > 1./FPS):
-            # cv2.imwrite('./data/img'+str(i)+'.jpg', frame)
-            print(frame)
-            prev_time = time()
+        if (ret is True) and (current_frame%FPS == 0):
+            cv2.imwrite('./data/img'+str(current_frame)+'.jpg', frame)
             
-            if cv2.waitKey(1) > 0:
-                break
+        elif ret is False:
+            break
         
-        i += 1
-        
+        current_frame += 1
+        print(current_frame)
+
     vid.release()
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
 
 
 
