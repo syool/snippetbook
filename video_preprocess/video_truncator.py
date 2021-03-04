@@ -18,7 +18,7 @@ def truncate(video, FPS=24):
     current_frame = 0
     
     cargo = []
-    while(True):
+    while True:
         ret, frame = vid.read()
         
         if (ret is True) and (current_frame%FPS == 0):
