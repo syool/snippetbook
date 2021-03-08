@@ -48,19 +48,22 @@ print('cuda?: {}'.format(torch.cuda.is_available()))
 
 
 net = model.Net()
-# net = nn.DataParallel(net)
 net = net.cuda()
+paranet = nn.DataParallel(net) # caution: use a different variable name. see "WARNING"
+
+# WARNING #
+# if you want to use nn.DataParallel,
+# don't let SummaryWriter functions cotain any DataParalleled model.
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
-
-writer = SummaryWriter('./visualization/runs')
 
 dataiter = iter(trainloader)
 images, labels = dataiter.next()
 images,labels = images.cuda(), labels.cuda()
 
-writer.add_graph(net, images)
+writer = SummaryWriter('./project/runs')
+writer.add_graph(net, images) 
 
 
 running_loss = 0.0
@@ -76,7 +79,7 @@ for epoch in range(100):  # 데이터셋을 여러번 반복
         optimizer.zero_grad()
 
         # 순전파 + 역전파 + 최적화를 한 후
-        outputs = net(inputs)
+        outputs = paranet(inputs)
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
