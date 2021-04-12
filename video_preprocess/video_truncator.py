@@ -4,41 +4,66 @@ import pickle
 
 import cv2
 import os
-os.chdir('/home/user/Downloads/vidtest')
+os.chdir('/home/user/Downloads/AD datasets/CUHK_Avenue_Dataset/Avenue Dataset/testing_videos')
 
 
-def truncate(video, FPS=24):
+def truncate(video, opt, loop, FPS=24):
     '''
     ---
         video = str, name of the input video \n
         FPS = int, frame rate of the output (default=24)
     '''
     vid = cv2.VideoCapture(video)
+    path = './Test'+str(loop).zfill(3)
 
-    current_frame = 0
+    current_frame = 1
     
-    cargo = []
-    while True:
-        ret, frame = vid.read()
-        
-        if (ret is True) and (current_frame%FPS == 0):
-            # cv2.imwrite('./data/img'+str(current_frame)+'.jpg', frame)
+    try:
+        # creating a folder named data
+        if not os.path.exists(path):
+            os.makedirs(path)
+  
+    # if not created then raise error
+    except OSError:
+        print ('Error: Creating directory of data')
+    
+    if opt == 'frame':
+        while True:
+            ret, frame = vid.read()
             
-            arr = np.array(frame, dtype=np.float64)
-            cargo.append(arr)
-            # print(arr)
-            # print(arr.shape)
-            # np.save('./nparr/frame{}.npy'.format(current_frame), arr)
+            if (ret is True):
+                name = path+'/'+str(current_frame).zfill(4)+'.tif'
+                cv2.imwrite(name, frame)
+                
+                current_frame += 1
+                
+            elif ret is False:
+                break
             
-        elif ret is False:
-            break
+        vid.release()
+        # cv2.destroyAllWindows()
+    
+    elif opt == 'pkl':
+        cargo = []
+        while True:
+            ret, frame = vid.read()
+            
+            if (ret is True) and (current_frame%FPS == 0):
+                arr = np.array(frame, dtype=np.float64)
+                cargo.append(arr)
+                # print(arr)
+                # print(arr.shape)
+                # np.save('./nparr/frame{}.npy'.format(current_frame), arr)
+                
+                current_frame += 1
+                
+            elif ret is False:
+                break
+    
+        vid.release()
+        # cv2.destroyAllWindows()
         
-        current_frame += 1
-    
-    vid.release()
-    # cv2.destroyAllWindows()
-    
-    return cargo
+        return cargo
 
  
 def save_pkl(cargo):
@@ -68,10 +93,10 @@ def read_pkl(pklfile):
     return frames
 
 
-
-# frames = truncate('002.avi', FPS=5)
+for i in range(1, 22):
+    frames = truncate(str(i).zfill(2)+'.avi', opt='frame', loop=i, FPS=25)
 # save_pkl(frames)
 
-l = read_pkl('./container_002.pkl')
-print(l[0])
-print(len(l))
+# l = read_pkl('./container_002.pkl')
+# print(l[0])
+# print(len(l))
