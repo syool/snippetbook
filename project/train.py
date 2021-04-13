@@ -55,7 +55,7 @@ paranet = nn.DataParallel(net) # caution: use a different variable name. see "WA
 # if you want to use nn.DataParallel,
 # don't let SummaryWriter functions cotain any DataParalleled model.
 
-criterion = nn.CrossEntropyLoss()
+criterion = nn.CrossEntropyLoss().cuda()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
 dataiter = iter(trainloader)
