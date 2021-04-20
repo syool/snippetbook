@@ -4,7 +4,7 @@ import pickle
 
 import cv2
 import os
-os.chdir('/home/user/Downloads/AD datasets/CUHK_Avenue_Dataset/Avenue Dataset/testing_videos')
+os.chdir('/home/user/Downloads/')
 
 
 def truncate(video, opt, loop, FPS=24):
@@ -14,7 +14,7 @@ def truncate(video, opt, loop, FPS=24):
         FPS = int, frame rate of the output (default=24)
     '''
     vid = cv2.VideoCapture(video)
-    path = './Test'+str(loop).zfill(3)
+    path = './SH_train/'+str(loop).zfill(3)
 
     current_frame = 1
     
@@ -32,7 +32,7 @@ def truncate(video, opt, loop, FPS=24):
             ret, frame = vid.read()
             
             if (ret is True):
-                name = path+'/'+str(current_frame).zfill(4)+'.tif'
+                name = path+'/'+str(current_frame).zfill(3)+'.tif'
                 cv2.imwrite(name, frame)
                 
                 current_frame += 1
@@ -93,8 +93,16 @@ def read_pkl(pklfile):
     return frames
 
 
-for i in range(1, 22):
-    frames = truncate(str(i).zfill(2)+'.avi', opt='frame', loop=i, FPS=25)
+
+data_path = '/home/user/Downloads/AD_datasets/shanghaitech/training/videos_rename/'
+
+for i in range(1, 331):
+    frames = truncate(data_path+str(i).zfill(3)+'.avi', opt='frame', loop=i, FPS=24)
+    print('video {} done'.format(i))
+
+print()
+print('TERMINATE')
+
 # save_pkl(frames)
 
 # l = read_pkl('./container_002.pkl')
