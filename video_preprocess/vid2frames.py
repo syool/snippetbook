@@ -53,8 +53,9 @@ def run(path, videos, opt, fill, extension='.jpg'):
     elif opt=='B': # option B: save frames into each folder
         
         for i in tqdm(range(len(videos))):
+            tmp = os.path.splitext(videos[i])[0] # remove file extension
             
-            target_path = './frames/{}/'.format(i+1)
+            target_path = './frames/{}/'.format(tmp)
             _mkdir(target_path)
             
             vid = cv2.VideoCapture(loc+videos[i])
@@ -76,7 +77,7 @@ def run(path, videos, opt, fill, extension='.jpg'):
             vid.release()
 
 
-loc = '/home/user/Downloads/AD_datasets/CUHK_Avenue_Dataset/training_videos/'
+loc = '/home/user/Downloads/sh_training/'
 videos = sorted(os.listdir(loc))
 
-run(loc, videos, opt='A', fill=5)
+run(loc, videos, opt='B', fill=3)
