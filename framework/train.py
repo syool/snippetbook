@@ -46,7 +46,6 @@ classes = ('T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
 # cuda?
 print('cuda?: {}'.format(torch.cuda.is_available()))
 
-
 net = model.Net()
 net = net.cuda()
 paranet = nn.DataParallel(net) # caution: use a different variable name. see "WARNING"
@@ -74,6 +73,9 @@ for epoch in range(100):  # 데이터셋을 여러번 반복
         # [inputs, labels]의 목록인 data로부터 입력을 받은 후;
         inputs, labels = data
         inputs, labels = inputs.cuda(), labels.cuda()
+
+        # print(inputs)
+        # print(inputs.shape)
 
         # 변화도(Gradient) 매개변수를 0으로 만들고
         optimizer.zero_grad()
