@@ -124,7 +124,7 @@ batch = 1
 epochs = 1
 H, W = 256, 256
 num_workers = 4
-dataset = 'ped2'
+dataset = 'shanghai'
 main_dir = '/home/user/Downloads'
 train_folder = '{}/VADSET/{}/training/frames'.format(main_dir, dataset)
 
@@ -145,4 +145,4 @@ print(train_set)
 for epoch in range(epochs):
     for i, data in enumerate(trainloader):
         input = Variable(data)
-        print(input)
+        print(input.shape)
