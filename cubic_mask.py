@@ -36,6 +36,6 @@ def cubic_mask(cube_size, full_size):
     
     return mask0, mask1
     
-a, b = cubic_mask([2, 2, 2], [2, 2, 2])
-print(a)
-print(b)
+zero_start, one_start = cubic_mask([4, 32, 32], [4, 8, 8])
+print(torch.unsqueeze(zero_start, dim=0).shape) # 4 dimensional
+print(one_start.shape)
