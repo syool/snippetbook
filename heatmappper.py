@@ -4,12 +4,12 @@ import os
 from tqdm import tqdm
 
 main_dir = '/home/user/Downloads/AlphaRes'
-dataset = 'avenue'
+dataset = 'ped2'
 net_switch = '3d'
-loss_switch = 'ssim-l1'
+loss_switch = 'mse'
 
-target_dir = main_dir+'/'+dataset+'/{}-{}/errors'.format(net_switch, loss_switch)
-log_dir = main_dir+'/'+dataset+'/{}-{}/heats'.format(net_switch, loss_switch)
+target_dir = main_dir+'/'+dataset+'/{}-{}-inference-on-training-set/errors'.format(net_switch, loss_switch)
+log_dir = main_dir+'/'+dataset+'/{}-{}-inference-on-training-set/heats'.format(net_switch, loss_switch)
 os.makedirs(log_dir, exist_ok=True)
 
 # target_dir = '/home/user/Downloads/memae-anomaly-detection/errors'
