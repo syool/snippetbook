@@ -7,12 +7,16 @@ import os
 
 from torch.functional import Tensor
 
-os.chdir('/media/user/LinuxDrive/VADSET/avenue/testing/frames/01')
+os.chdir('/home/user/Documents/AlphaRes/ped2/2d-ssim/heats')
 
-a = cv2.imread('./0000.jpg', 0)
+a = cv2.imread('./error1.png', 0)
+print(a)
 
 a = torch.Tensor(a)
-print(a.shape)
+a = a.double()
+a = torch.where(a<=25., 0., a)
+a = Tensor.numpy(a)
+cv2.imwrite('/home/user/Downloads/blah.png', a)
 
 # a = cv2.imread('000008-vis.png', 0)
 # a = torch.Tensor(a) # [0, 255] -> [0, 1]

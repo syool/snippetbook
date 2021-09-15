@@ -5,8 +5,8 @@ from tqdm import tqdm
 
 main_dir = '/home/user/Documents/AlphaRes'
 dataset = 'ped2'
-net_switch = '3d'
-loss_switch = 'mse'
+net_switch = '2d'
+loss_switch = 'ssim'
 
 target_dir = main_dir+'/'+dataset+'/{}-{}/errors'.format(net_switch, loss_switch)
 log_dir = main_dir+'/'+dataset+'/{}-{}/heats'.format(net_switch, loss_switch)

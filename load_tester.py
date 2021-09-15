@@ -111,6 +111,8 @@ class FrameLoader(data.Dataset): # PROBLOMETIC SHIIIIT
         frame_name = int(self.samples[index].split('/')[-1].split('.')[-2])
         # print('getitem index:', index)
         
+        print(self.dict[video_name]['frame'][frame_name])
+        
         image = Image.open(self.dict[video_name]['frame'][frame_name])
         image = self.transform(image)
 
@@ -120,7 +122,7 @@ class FrameLoader(data.Dataset): # PROBLOMETIC SHIIIIT
         return len(self.samples)
 
 
-batch = 1
+batch = 10
 epochs = 1
 H, W = 256, 256
 num_workers = 4
@@ -139,10 +141,7 @@ train_set = FrameLoader(train_folder,
 trainloader = data.DataLoader(train_set, batch_size=batch, shuffle=False,
                     num_workers=num_workers, drop_last=True, pin_memory=True)
 
-print(train_set)
-
 
 for epoch in range(epochs):
     for i, data in enumerate(trainloader):
         input = Variable(data)
-        print(input.shape)
