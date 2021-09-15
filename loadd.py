@@ -6,19 +6,24 @@ from collections import OrderedDict
 import os
 
 path = '/home/user/Documents/VADSET'
-dataset = 'ped2'
+dataset = 'shanghai'
 valid = 'training' # 'training' or 'testing'
 
 lane = path+'/'+dataset+'/'+valid+'/frames'
 
 videos = sorted(glob(os.path.join(lane, '*')))
-frames = OrderedDict()
-idx_list = []
 
 def get_samples():
+    entry = []
     for vid in videos:
-        idx = vid.split('/')[-1]
-        idx_list.append(idx)
-        x = sorted(glob(os.path.join(vid, '*.jpg')))
-        frames[idx] = x
+        fr = sorted(glob(os.path.join(vid, '*')))
+        for i in fr:
+            entry.append(i)
+            
+    return entry
+        
+def __len__():
+    return len(get_samples())
 
+a = get_samples()
+print(a[1])
