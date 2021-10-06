@@ -1,22 +1,19 @@
-import torch
-import torchvision.transforms as transforms
-
 import numpy as np
-from PIL import Image
+import torch
+import torch.nn.functional as F
 
-# canvas = Image.new('RGB', (256, 256), (0, 0, 0))
-# print(canvas)
+# path = '/home/user/Documents/VADSET'
+# dataset = 'ped2'
+# gt_label = '{}/frame_labels_{}.npy'.format(path, dataset)
 
-# tr = transforms.Compose([
-#         transforms.Grayscale(),
-#         transforms.ToTensor(),
-#         transforms.Normalize(([0.5]), ([0.5])),
-#         # ToTensor: [0, 255] -> [0, 1]
-#         # Normalize: [0, 1] -> [-1, 1]
-#     ])
+# label = np.load(gt_label)
 
-# canvas = tr(canvas)
-# print(canvas)
+# li = label.squeeze()
+# for i in range(len(li)):
+#     print(i, li[i])
 
-canvas = torch.full((1, 256, 256), -1.)
-print(canvas)
+
+a = ([3, 2, 1])
+
+t = a.max(1)
+print(t)
