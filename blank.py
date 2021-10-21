@@ -1,38 +1,34 @@
 import numpy as np
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torchvision import models
+from glob import glob
+import os
 
-# path = '/home/user/Documents/VADSET'
-# dataset = 'ped2'
-# gt_label = '{}/frame_labels_{}.npy'.format(path, dataset)
+path = '/home/user/Documents/VADSET/ped2/testing/frames'
+gt_label = '/home/user/Documents/VADSET/ped2/frame_labels_ped2.npy'
+labels = np.load(gt_label).squeeze()
+window = 16
 
-# label = np.load(gt_label)
-
-# li = label.squeeze()
-# print(li)
-
-# torch.manual_seed(0)
-
-# a = torch.rand([8, 512, 4, 4])
-# batch, C, H, W = a.shape
-
-# a = a.permute(0, 2, 3, 1)
-# x = a.contiguous().view(-1, C)
-# y = a.contiguous().view(batch*H*W, C)
-
-# print(x)
-# print(y)
-
-net = models.vgg16().features
-module = nn.Sequential()
-
-for i in range(16):
-    module.add_module(str(i), net[i])
+dict = {}
+count = 0
+for i, vid in enumerate(videos):
+    frames = sorted(glob(os.path.join(vid, '*')))
+        
+    idx = f'{i+1}'
+    n_frames = len(frames)
+    l = labels[count:count+n_frames]
+    dict[idx] = l
     
-for params in module.parameters():
-    params.requires_grad = False
-    
-print(module)
+    count += n_frames
+
+capsule = []
+for i in range(len(dict)):
+    idx = f'{i+1}'
+    for e in range(len(dict[idx])):
+        encap = dict[idx][e:e+window]
+        
+        if len(encap) < window:
+            continue
+        else:
+            capsule.append(encap)
+            
+print(capsule)

@@ -19,22 +19,14 @@ for frame in frames:
     a = torch.where(a<=30., 0., a+30.)
     a = Tensor.numpy(a)
     
-    name = frame.split('/')[-1]
+    name = frame.splt('/')[-1]
     cv2.imwrite('/home/user/Downloads/re/{}'.format(name), a)
 
-# a = cv2.imread('000008-vis.png', 0)
-# a = torch.Tensor(a) # [0, 255] -> [0, 1]
+a = cv2.imread('000008-vis.png', 0)
+a = torch.Tensor(a) # [0, 255] -> [0, 1]
 
-# a = a.double()
-# a = torch.where(a>=230., 250., a)
-# a = Tensor.numpy(a)
+a = a.double()
+a = torch.where(a>=230., 250., a)
+a = Tensor.numpy(a)
 
-# cv2.imwrite('/home/user/Downloads/a.png', a)
-
-# a = torch.tensor([[1., 2., 3.],
-#                   [4., 5., 6.]])
-
-# a = a.double()
-# a = torch.where(a>=4., 0., a)
-# print(a)
-
+cv2.imwrite('/home/user/Downloads/a.png', a)
