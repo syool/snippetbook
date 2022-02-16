@@ -4,13 +4,12 @@ from typing import Tuple, Union
 import cv2
 
 
-def get_gtmask(gt_path: str, resize: bool = False) -> Tuple[np.array, np.array]:
+def get_gtmask(gt_path: str, rescale: bool = False) -> Tuple[np.array, np.array]:
     gt = cv2.imread(gt_path, cv2.IMREAD_GRAYSCALE)
     
-    if resize:
+    if rescale:
         gt = cv2.resize(gt, dsize=(256, 256), interpolation=cv2.INTER_AREA)
-        gt = gt[5:251, 5:251]/255
-        # gt = np.expand_dims(gt/255, axis=0)
+        gt = gt[5:251, 5:251] / 255
     
     if len(np.unique(gt)) == 1: # all black
         return None, None
@@ -30,7 +29,7 @@ def get_error(err_path: str, normalize: bool = True) -> np.array:
 
 
 def inout_ratio(err: str, gt: str) -> Union[np.float64, None]:
-    in_mask, out_mask = get_gtmask(gt, resize=True)
+    in_mask, out_mask = get_gtmask(gt, rescale=False)
     err = get_error(err, normalize=True)
     
     if not (in_mask is None):
@@ -40,12 +39,12 @@ def inout_ratio(err: str, gt: str) -> Union[np.float64, None]:
         sum_in_error = np.sum(in_mask*err)
         sum_out_error = np.sum(out_mask*err)
         
+        e_out = (1/out_pixels) * sum_out_error
+        e_in = (1/in_pixels) * sum_in_error
+        
         # * integrity check
         # cv2.imwrite('/home/user/Downloads/in.jpg', in_mask*err*255)
         # cv2.imwrite('/home/user/Downloads/out.jpg', out_mask*err*255)
-        
-        e_out = (1/out_pixels) * sum_out_error
-        e_in = (1/in_pixels) * sum_in_error
         
         return e_out / e_in
     else:
