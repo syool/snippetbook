@@ -6,142 +6,85 @@ import torchvision.utils as vutils
 
 import numpy as np
 from collections import OrderedDict
-import glob
+from glob import glob
 from PIL import Image
 import os
 
 
-def slide(x, window_size):
-    entry = []
-    for i in range(len(x)-(window_size-1)):
-        window = []
-        for j in range(i, window_size+i):
-            window.append(x[j])
-        entry.append(window)
-
-    return entry
-
-
 class WindowLoader(data.Dataset):
-    def __init__(self, data_path, transform, window):
+    ''' Load a dataset using the silding window '''
+    def __init__(self, path, transform, window) -> None:
         super(WindowLoader, self).__init__()
-
-        self.dir = data_path
+        
+        self.path = path
         self.transform = transform
         self.window = window
-        self.dict = OrderedDict()
-        self.setup()
-        self.samples = self.get_samples()
+        self.window_list = self.get_windows()
+    
+    # get windows from the entire set
+    def get_windows(self):
+        videos = sorted(glob(os.path.join(self.path, '*')))
         
-    # === create a dictionary ===
-    def setup(self):
-        videos = glob.glob(os.path.join(self.dir, '*')) # get a path of each video
-        for video in sorted(videos):
-            video_name = video.split('/')[-1] # get video names
-            self.dict[video_name] = {}
-            self.dict[video_name]['path'] = video
-            self.dict[video_name]['frame'] = glob.glob(os.path.join(video, '*.jpg'))
-            self.dict[video_name]['frame'].sort()
-            self.dict[video_name]['length'] = len(self.dict[video_name]['frame'])
-
-    # === indexing frames for sliding window ===
-    def get_samples(self):
-        container = []
-        videos = glob.glob(os.path.join(self.dir, '*'))
-        for video in sorted(videos):
-            video_name = video.split('/')[-1]
-            entry = self.dict[video_name]['frame']
-            entry = slide(entry, self.window) # -> triple loop: improvement required
-            container.extend(entry)
+        entry1 = []
+        for vid in videos:
+            frames = sorted(glob(os.path.join(vid, '*')))
+            entry1.append(frames)
         
-        return container
+        entry2 = []
+        for vid in entry1:
+            for i in range(len(vid)):
+                fr_path = vid[i:i+self.window]
+                
+                # Cutting tail of a video w.r.t. the window size
+                if len(fr_path) < self.window:
+                    continue
+                else:
+                    entry2.append(fr_path)
+                    
+        return entry2
 
     def __getitem__(self, index):
-        data = self.samples[index]
+        print(index)
+        data = self.window_list[index]
         
         stack = []
         for i in data:
-            img = self.transform(Image.open(i))
-            img = torch.squeeze(img)
-            stack.append(img)
+            fr = self.transform(Image.open(i)) # [1, H, W]
+            x = torch.squeeze(fr) # [H, W]
             
-        cat = torch.stack(stack, axis=0)
-        cat = torch.unsqueeze(cat, dim=0)
+            stack.append(x)
+            
+        cat = torch.stack(stack, axis=0) # [window, H, W]
+        cat = torch.unsqueeze(cat, dim=0) # [1, window, H, W]
         
         return cat
 
     def __len__(self):
-        return len(self.samples)
+        return len(self.window_list)
 
 
-class FrameLoader(data.Dataset): # PROBLOMETIC SHIIIIT
-    def __init__(self, data_path, transform):
-        super(FrameLoader, self).__init__()
-        
-        self.dir = data_path
-        self.transform = transform
-        self.dict = OrderedDict()
-        self.setup()
-        self.samples = self.get_samples()
-
-    # === create a dictionary ===
-    def setup(self):
-        videos = glob.glob(os.path.join(self.dir, '*')) # get a path of each video
-        for video in sorted(videos):
-            video_name = video.split('/')[-1] # get video names
-            self.dict[video_name] = {}
-            self.dict[video_name]['path'] = video
-            self.dict[video_name]['frame'] = glob.glob(os.path.join(video, '*.jpg'))
-            self.dict[video_name]['frame'].sort()
-            self.dict[video_name]['length'] = len(self.dict[video_name]['frame'])
-
-    # === list all frames from the entire set ===
-    def get_samples(self):
-        frames = []
-        videos = glob.glob(os.path.join(self.dir, '*'))
-        for video in sorted(videos):
-            video_name = video.split('/')[-1]
-            for i in range(len(self.dict[video_name]['frame'])):
-                frames.append(self.dict[video_name]['frame'][i])
-                           
-        return frames
-    
-    def __getitem__(self, index):
-        video_name = self.samples[index].split('/')[-2]
-        frame_name = int(self.samples[index].split('/')[-1].split('.')[-2])
-        # print('getitem index:', index)
-        
-        print(self.dict[video_name]['frame'][frame_name])
-        
-        image = Image.open(self.dict[video_name]['frame'][frame_name])
-        image = self.transform(image)
-
-        return image
-    
-    def __len__(self):
-        return len(self.samples)
-
-
-batch = 10
-epochs = 1
+batch = 1
+epochs = 10
 H, W = 256, 256
 num_workers = 4
-dataset = 'shanghai'
-main_dir = '/home/user/Downloads'
-train_folder = '{}/VADSET/{}/training/frames'.format(main_dir, dataset)
+dataset = 'ped2'
+main_dir = '/home/user/Documents'
+train_folder = f'{main_dir}/VADSET/{dataset}/testing/frames'
 
-train_set = FrameLoader(train_folder,
+train_set = WindowLoader(train_folder,
                         transforms.Compose([
                             transforms.Grayscale(),
                             transforms.Resize((H, W)),
-                            transforms.ToTensor(), # ! ToTensor before Normalize
-                            # transforms.Normalize(mean=[0.5], std=[0.5]),
-                        ]))
+                            transforms.ToTensor(),
+                            transforms.Normalize((0.5), (0.5))
+                        ]),
+                        window=16)
 
 trainloader = data.DataLoader(train_set, batch_size=batch, shuffle=False,
-                    num_workers=num_workers, drop_last=True, pin_memory=True)
+                    num_workers=num_workers, drop_last=False, pin_memory=True)
 
 
 for epoch in range(epochs):
+    print()
     for i, data in enumerate(trainloader):
         input = Variable(data)

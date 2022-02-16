@@ -16,7 +16,7 @@ def _mkdir(path):
         print ('Error: Creating directory of data')
 
 
-def run(path, videos, opt, fill, extension='.jpg'):
+def run(loc, videos, opt, fill, extension='.jpg'):
     print('current location:', loc)
     print('video list:', videos)
     
@@ -58,7 +58,7 @@ def run(path, videos, opt, fill, extension='.jpg'):
             target_path = './frames/{}/'.format(tmp)
             _mkdir(target_path)
             
-            vid = cv2.VideoCapture(loc+videos[i])
+            vid = cv2.VideoCapture(loc+'/'+videos[i])
             
             i = 1
         
@@ -77,7 +77,7 @@ def run(path, videos, opt, fill, extension='.jpg'):
             vid.release()
 
 
-loc = '/home/user/Downloads/sh_training/'
+loc = './sh_testing'
 videos = sorted(os.listdir(loc))
 
 run(loc, videos, opt='B', fill=3)
